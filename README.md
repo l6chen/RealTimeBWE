@@ -6,7 +6,7 @@ This repository contains the unofficial pytorch lightning implementation of the 
  
 To run this code, you will need:
 
-- torch==2.0.0
+- torch==2.0.7
 - pytorch_lightning==2.0.0
 - numpy==1.23.5
 - pesq==0.0.4
