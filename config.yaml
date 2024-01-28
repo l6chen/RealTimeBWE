@@ -13,14 +13,14 @@ random_seed: 0b011011
 dataset:
 
 #directory that have every dataset in it.
-  data_dir: "/media/zeroone"
+  data_dir: "./datasets"
 
 
-  nb_train: "downsampled/train"
-  nb_val: "downsampled/test"
+  nb_train: "vctk/train.txt"
+  nb_val: "vctk/test.txt"
 
-  wb_train: "target/train"
-  wb_val: "target/test"
+  wb_train: "vctk/train.txt"
+  wb_val: "vctk/test.txt"
 
 #So for this case, wideband test dataset should be located at "/media/zeroone/target/test"
 
@@ -58,12 +58,12 @@ optim:
 
 train:
   epoch_save_start: 0
-  val_epoch: 50
+  val_epoch: 10
   
 #Path of output of validation. 
   output_dir_path: "./output"
   logger_path: "./logger"
-
+  exp_path: "./RTBWE_logs"
   max_epochs: 350
 
   devices:

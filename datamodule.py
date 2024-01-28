@@ -23,11 +23,11 @@ class RTBWEDataset(Dataset):
         self.wavs={}
         self.filenames= []
 
-        paths_wav_wb= get_wav_paths(self.path_dir_wb)
-        paths_wav_nb= get_wav_paths(self.path_dir_nb)
+        self.paths_wav_wb= get_wav_paths_plain(self.path_dir_wb)
+        self.paths_wav_nb= get_wav_paths_plain(self.path_dir_nb)
 
         if mode == "pred":
-            for path_wav_nb in paths_wav_nb:
+            for path_wav_nb in self.paths_wav_nb:
                 filename=get_filename(path_wav_nb)[0]
 
                 wav_nb, self.sr_nb = ta.load(path_wav_nb)
@@ -37,24 +37,13 @@ class RTBWEDataset(Dataset):
                 
                 self.wavs[filename]=(None , wav_nb)
                 self.filenames.append(filename)
-                print(f'\r {mode}: {len(self.filenames)} th file loaded', end='')
-        
+                self.filenames.sort()
         else:
-            for path_wav_wb, path_wav_nb in zip(paths_wav_wb, paths_wav_nb):
+            for path_wav_wb, path_wav_nb in zip(self.paths_wav_wb, self.paths_wav_nb):
                 filename=get_filename(path_wav_wb)[0]
-                wav_nb, self.sr_nb = ta.load(path_wav_nb)
-                wav_wb, self.sr_wb = ta.load(path_wav_wb)
-                
-                if self.sr_nb != 8000:
-                    wav_nb = ta.functional.resample(wav_nb, self.sr_nb, 8000)
-                if self.sr_wb != 16000:
-                    wav_wb = ta.functional.resample(wav_wb, self.sr_wb, 16000)
-                
-                self.wavs[filename]=(wav_wb, wav_nb)
                 self.filenames.append(filename)
-                print(f'\r {mode}: {len(self.filenames)} th file loaded', end='')
-            
-        self.filenames.sort()
+
+
 
 
        
@@ -66,8 +55,13 @@ class RTBWEDataset(Dataset):
     # 인덱스를 입력받아 그에 맵핑되는 입출력 데이터를 파이토치의 Tensor 형태로 리턴
     def __getitem__(self, idx):
 
+        wav_wb, self.sr_wb = ta.load(self.paths_wav_wb[idx])
+
+        wav_wb = ta.functional.resample(wav_wb, self.sr_wb, 16000)
+        wav_nb = ta.functional.resample(wav_wb, 16000, 8000)
+
         filename = self.filenames[idx]
-        (wav_wb, wav_nb) = self.wavs[filename]
+
 
 
         if self.seg_len > 0 and self.mode == "train":

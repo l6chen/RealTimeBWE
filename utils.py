@@ -13,6 +13,13 @@ def get_wav_paths(paths: list):
     
     return wav_paths
 
+def get_wav_paths_plain(paths: str):
+    with open(paths, 'r') as fin:
+        flist = fin.readlines()
+    wav_paths = [i.replace('\n', '') for i in flist]
+    wav_paths.sort(key=lambda x: os.path.split(x)[-1])
+
+    return wav_paths
 def check_dir_exist(path_list):
     if type(path_list) == str:
         path_list = [path_list]
